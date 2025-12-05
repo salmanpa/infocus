@@ -11,7 +11,7 @@ flowchart LR
 
     subgraph Storage["Хранилище"]
         B --> C[(Postgres: raw_posts)]
-        G[Vector Store (pgvector)]
+        B --> G[(Vector Store: pgvector)]
     end
 
     subgraph Processing["Обработка"]
