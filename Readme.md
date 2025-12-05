@@ -117,3 +117,33 @@ sequenceDiagram
 - Логирование и трейсинг всех этапов (fetch, annotate, embed, rank).
 - Контроль rate limits Telegram и LLM (батчинг, backoff).
 - Единообразные тесты и миграции на каждый релиз.
+
+## Локальный стек LLM/эмбеддингов (16GB GPU)
+
+Минимальная конфигурация для аннотации постов:
+
+- **LLM**: `qwen2.5:0.5b-instruct` или `mistral:instruct` (4-bit) через Ollama.
+- **Эмбеддинги**: `nomic-embed-text:latest` или `intfloat/multilingual-e5-base` (локальный сервер совместимый с `/api/embed`).
+- **Аппаратные требования**: одна видеокарта 16 GB (легкие модели в 4-bit) + CPU fallback.
+
+### Запуск локального пайплайна
+
+1. Установить зависимости (`pip install -e .[dev]`).
+2. Поднять Ollama сервер и подтянуть модели:
+   ```bash
+   ollama pull qwen2.5:0.5b-instruct
+   ollama pull nomic-embed-text
+   ```
+3. Использовать `AnnotationPipeline` из `infocus`:
+   ```python
+   import asyncio
+   from infocus import AnnotationPipeline, ModelConfig, LLMAnnotator, OllamaBackend, LocalEmbedder
+
+   config = ModelConfig()
+   annotator = LLMAnnotator(OllamaBackend(), config)
+   embedder = LocalEmbedder()
+   pipeline = AnnotationPipeline(annotator, embedder, config)
+
+   asyncio.run(pipeline.annotate_posts(["Новый запуск сервиса для анализа новостей."]))
+   ```
+4. Для оффлайн/тестового режима используйте `StubBackend` и `StubEmbedder`.
