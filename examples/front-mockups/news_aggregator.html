@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Агрегат новостей — прототип</title>
+  <style>
+    :root {
+      --bg: #f4f5f8;
+      --card: #ffffff;
+      --line: #dbe0e8;
+      --text: #202534;
+      --muted: #76809b;
+      --accent: #6b7dfb;
+      --accent-2: #36b37e;
+      --accent-3: #ffb020;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    h1 { margin: 0; font-size: 20px; font-weight: 700; }
+    main {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 280px 1fr 360px;
+      gap: 16px;
+      min-height: calc(100vh - 72px);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px -28px rgba(0,0,0,0.25);
+      padding: 16px;
+    }
+    .section-title {
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #f7f8fc;
+      font-size: 13px;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    .pill strong { color: var(--text); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn.ghost { background: transparent; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -18px rgba(0,0,0,0.35); }
+    .stack { display: flex; flex-direction: column; gap: 10px; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .list { display: flex; flex-direction: column; gap: 12px; }
+    .item { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fafbff; }
+    .item .title { font-weight: 700; margin-bottom: 4px; }
+    .item small { color: var(--muted); }
+    .tag { padding: 6px 8px; border-radius: 8px; font-size: 12px; background: #eef1fb; color: var(--accent); }
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      resize: vertical;
+      font-family: inherit;
+    }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+    .status-dot { width: 10px; height: 10px; border-radius: 999px; background: var(--accent-2); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Агрегат новостей</h1>
+    <div class="toolbar">
+      <button class="btn ghost">Шаблон</button>
+      <button class="btn ghost">Источники</button>
+      <button class="btn">Отправить в AI</button>
+      <button class="btn">Сделать</button>
+      <button class="btn primary">Опубликовать</button>
+    </div>
+  </header>
+  <main>
+    <section class="card stack">
+      <div class="section-title">Фильтры</div>
+      <div class="pill"><strong>Период</strong><span>за неделю</span></div>
+      <div class="pill"><strong>Категория</strong><span>AI + security</span></div>
+      <div class="pill"><strong>Тон</strong><span>спокойный</span></div>
+      <div class="pill"><strong>Сообщение</strong><span>без флейма</span></div>
+      <div class="section-title">Подборка</div>
+      <div class="item">
+        <div class="title">Статус сборки</div>
+        <small>Время генерации &mdash; при достаточном количестве постов</small>
+        <div class="status" style="margin-top:8px;">
+          <span class="status-dot"></span>
+          <span>AI способен генерить посты</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card stack">
+      <div class="row">
+        <div class="section-title" style="margin: 0;">Агрегаторы</div>
+        <div class="toolbar">
+          <button class="btn">Добавить</button>
+          <button class="btn ghost">Посты</button>
+        </div>
+      </div>
+      <div class="list">
+        <div class="item">
+          <div class="row">
+            <div>
+              <div class="title">Агрегатор 1</div>
+              <small>Фильтр: AI + security</small>
+            </div>
+            <span class="tag">15 новостей</span>
+          </div>
+        </div>
+        <div class="item">
+          <div class="row">
+            <div>
+              <div class="title">Агрегатор 2</div>
+              <small>Фильтр: Финансы</small>
+            </div>
+            <span class="tag">8 новостей</span>
+          </div>
+        </div>
+        <div class="item">
+          <div class="row">
+            <div>
+              <div class="title">Агрегатор 3</div>
+              <small>Фильтр: Социальные</small>
+            </div>
+            <span class="tag">12 новостей</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-style:dashed; text-align:center; padding:18px; background:#f9fafc;">
+        База источников &mdash; добавьте RSS, Twitter, сайты, каналы
+      </div>
+    </section>
+
+    <section class="card stack">
+      <div class="row">
+        <div>
+          <div class="section-title" style="margin:0;">Черновик</div>
+          <small>Поделиться с друзьями / опубликовать в общую ленту</small>
+        </div>
+        <div class="toolbar">
+          <button class="btn">Поделиться</button>
+          <button class="btn ghost">Удалить</button>
+        </div>
+      </div>
+      <textarea placeholder="Куда катится айтишка, в космос или в пропасть?&hellip;"></textarea>
+      <div class="toolbar">
+        <button class="btn">Отправить в AI</button>
+        <button class="btn">Сделать</button>
+        <button class="btn primary">Опубликовать</button>
+      </div>
+      <div class="item">
+        <div class="title">Превью ленты</div>
+        <small>Отображаются последние черновики и опубликованные посты</small>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
