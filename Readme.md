@@ -113,6 +113,12 @@ sequenceDiagram
 - Добавить воркер LLM: заголовок, теги, эмбеддинг → `enriched_posts` + pgvector.
 - Простая кластеризация по порогу косинусной близости и выдача ленты через API.
 
+## Запуск Postgres локально
+1. Скопируйте переменные окружения: `cp .env.example .env`.
+2. Поднимите базу: `docker compose up -d postgres` (нужен установленный Docker).
+3. Проверите схему: `psql "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB" -c "\\dt"`.
+4. База инициализируется скриптом `db/schema.sql`, который монтируется в контейнер при старте.
+
 ## Правила качества
 - Логирование и трейсинг всех этапов (fetch, annotate, embed, rank).
 - Контроль rate limits Telegram и LLM (батчинг, backoff).
