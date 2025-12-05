@@ -11,7 +11,7 @@ flowchart LR
 
     subgraph Storage["Хранилище"]
         B --> C[(Postgres: raw_posts)]
-        G[Vector Store (pgvector)]:::vector
+        G[Vector Store (pgvector)]
     end
 
     subgraph Processing["Обработка"]
@@ -32,6 +32,7 @@ flowchart LR
     end
 
     classDef vector fill:#d0f0ff,stroke:#0088cc,stroke-width:1px;
+    class G vector;
 ```
 
 ## Этапы разработки
@@ -113,6 +114,12 @@ sequenceDiagram
 - Добавить воркер LLM: заголовок, теги, эмбеддинг → `enriched_posts` + pgvector.
 - Простая кластеризация по порогу косинусной близости и выдача ленты через API.
 
+## Запуск Postgres локально
+1. Скопируйте переменные окружения: `cp .env.example .env`.
+2. Поднимите базу: `docker compose up -d postgres` (нужен установленный Docker).
+3. Проверите схему: `psql "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB" -c "\\dt"`.
+4. База инициализируется скриптом `db/schema.sql`, который монтируется в контейнер при старте.
+
 ## Правила качества
 - Логирование и трейсинг всех этапов (fetch, annotate, embed, rank).
 - Контроль rate limits Telegram и LLM (батчинг, backoff).
@@ -147,3 +154,32 @@ sequenceDiagram
    asyncio.run(pipeline.annotate_posts(["Новый запуск сервиса для анализа новостей."]))
    ```
 4. Для оффлайн/тестового режима используйте `StubBackend` и `StubEmbedder`.
+## Базовый парсер Telegram-каналов
+В репозитории добавлен минимальный модуль `infocus.telegram`, который можно использовать для первичного съёма постов из каналов Telegram.
+
+Основные элементы:
+- `TelethonClientFactory` — создаёт клиент Telethon на основе настроек или переменных окружения `TELEGRAM_API_ID`/`TELEGRAM_API_HASH`.
+- `TelegramNewsParser` — асинхронно выгружает новые сообщения из списка каналов и нормализует их в структуру `TelegramMessage` (id, текст, дата, ссылка).
+
+Пример использования:
+
+```python
+import asyncio
+from infocus.telegram import ChannelConfig, TelegramNewsParser, TelethonClientFactory
+
+
+async def main():
+    factory = TelethonClientFactory.from_env()
+    parser = TelegramNewsParser(factory)
+
+    channels = [ChannelConfig("some_channel", limit=10)]
+    messages = await parser.fetch_many(channels)
+    for item in messages:
+        print(item.to_dict())
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+Зависимость: `telethon` (см. `requirements.txt`).
